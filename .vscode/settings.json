@@ -1,0 +1,6 @@
+{
+    "discord.enabled": true,
+    "prettier.requirePragma": true,
+    "typescript.format.insertSpaceAfterCommaDelimiter": false,
+    "javascript.format.insertSpaceAfterCommaDelimiter": false
+}
