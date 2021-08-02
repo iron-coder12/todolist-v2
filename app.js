@@ -19,7 +19,7 @@ mongoose.connect("mongodb://localhost:27017/todolistDB", {
 
 const itemsSchema = {
     name: String
-};//Hi
+}; //Hi
 
 const Item = mongoose.model("Item", itemsSchema);
 
@@ -44,14 +44,14 @@ const listSchema = {
 
 const List = mongoose.model("List", listSchema);
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
 
 
 
-    Item.find({}, function(err, foundItems) {
+    Item.find({}, function (err, foundItems) {
 
         if (foundItems.length === 0) {
-            Item.insertMany(defaultItems, function(err) {
+            Item.insertMany(defaultItems, function (err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -69,7 +69,7 @@ app.get("/", function(req, res) {
 
 });
 
-app.post("/", function(req, res) {
+app.post("/", function (req, res) {
 
     const itemName = req.body.newItem;
 
@@ -84,14 +84,14 @@ app.post("/", function(req, res) {
 });
 
 
-app.get("/about", function(req, res) {
+app.get("/about", function (req, res) {
     res.render("about");
 });
 
-app.post("/delete", function(req, res){
+app.post("/delete", function (req, res) {
     const checkedItemId = req.body.checkbox;
-    Item.findByIdAndRemove(checkedItemId, function(err){
-        if(!err) {
+    Item.findByIdAndRemove(checkedItemId, function (err) {
+        if (!err) {
             console.log(err);
             res.redirect("/");
         } else {
@@ -100,18 +100,36 @@ app.post("/delete", function(req, res){
     })
 });
 
-app.get("/:customListName", function(req, res){
- const customListName = req.params.customListName;
+app.get("/:customListName", function (req, res) {
+    const customListName = req.params.customListName;
 
- const list = new List({
-     name: customListName,
-     items: defaultItems
- });
+    List.findOne({
+        name: customListName
+    }, function (err, foundList) {
+        if (!err) {
+            if (!foundList) {
+                // * Create a new List
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                });
 
- list.save();
 
+                list.save();
+                res.redirect("/" + customListName);
+            } else {
+                // * Show an existing List
+
+                res.render("list", {
+                    listTitle: foundList.name,
+                    newListItems: foundList.items
+                });
+
+            }
+        }
+    });
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
     console.log("Server started on port 3000");
 })
