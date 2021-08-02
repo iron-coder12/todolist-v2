@@ -89,7 +89,7 @@ app.get("/about", function(req, res) {
 });
 
 app.post("/delete", function(req, res){
-    console.lof(req.body);
+    console.log(req.body.checkbox);
 });
 
 app.listen(3000, function() {
